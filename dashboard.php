@@ -4,8 +4,6 @@ include 'calculate_metrics.php';
 checkLogin();
 if($_SESSION['role']!='admin') header("Location: login.php");
 
-$isAdmin = true;
-
 // Get departments for filter
 $deptResult = $conn->query("SELECT DISTINCT department FROM employees");
 $departments = [];
@@ -53,16 +51,15 @@ label{color:var(--text-light);font-weight:500;}
 <body>
 <div class="sidebar">
 <img src="assets/logo.png" class="logo" alt="Logo">
-<h2>DASHBOARD</h2>
+<h2>ADMIN DASHBOARD</h2>
 <ul class="nav flex-column">
 <li><a class="nav-link active" href="dashboard.php">Overview</a></li>
 <li><a class="nav-link" href="add_employee.php">Add Employee</a></li>
 <li><a class="nav-link" href="logout.php">Logout</a></li>
 </ul>
 </div>
-<div class="main-content">
 
-<!-- Alerts -->
+<div class="main-content">
 <div id="alerts-container"></div>
 
 <div class="row mb-4">
@@ -90,6 +87,7 @@ label{color:var(--text-light);font-weight:500;}
 </div>
 </div>
 
+<!-- Employee Performance Table -->
 <div class="card p-3 mb-4">
 <h5>Employee Performance</h5>
 <table class="table table-striped">
@@ -98,6 +96,7 @@ label{color:var(--text-light);font-weight:500;}
 </table>
 </div>
 
+<!-- Attendance Trend Chart -->
 <div class="card p-3 mb-4">
 <h5>Attendance Trends (Average)</h5>
 <canvas id="attendanceChart"></canvas>
@@ -114,7 +113,7 @@ const monthFilter = document.getElementById('month-filter');
 const performanceBody = document.getElementById('performance-body');
 const alertsContainer = document.getElementById('alerts-container');
 
-// Apply filters
+// Apply department filter
 function applyFilters(){
     const dept = deptFilter.value;
     const rows = performanceBody.querySelectorAll('tr');
@@ -125,7 +124,10 @@ function applyFilters(){
     });
 }
 deptFilter.addEventListener('change', applyFilters);
-monthFilter.addEventListener('input', applyFilters);
+monthFilter.addEventListener('input', ()=>{
+    reloadChart();
+    reloadTable();
+});
 
 // Chart
 let ctx = document.getElementById('attendanceChart').getContext('2d');
@@ -141,7 +143,8 @@ let attendanceChart = new Chart(ctx, {
 
 // Reload chart
 function reloadChart(){
-    $.getJSON('attendance_chart_data.php', function(data){
+    const month = monthFilter.value || '';
+    $.getJSON('attendance_chart_data.php', { month: month }, function(data){
         attendanceChart.data.labels = data.labels;
         attendanceChart.data.datasets[0].data = data.trendData;
         attendanceChart.update();
@@ -150,7 +153,8 @@ function reloadChart(){
 
 // Reload performance table
 function reloadTable(){
-    $.getJSON('performance_data.php', function(data){
+    const month = monthFilter.value || '';
+    $.getJSON('performance_data.php', { month: month }, function(data){
         let html = '';
         data.forEach(emp=>{
             html += `<tr data-dept="${emp.department}" class="${emp.lowClass}">
