@@ -4,11 +4,13 @@ include 'calculate_metrics.php';
 checkLogin();
 if($_SESSION['role']!='admin') exit;
 
+$month = $_GET['month'] ?? ''; // YYYY-MM
+
 $employeeResult = $conn->query("SELECT * FROM employees");
 $data = [];
 
 while($emp=$employeeResult->fetch_assoc()){
-    $metrics=getEmployeeMetrics($emp['id']);
+    $metrics = getEmployeeMetrics($emp['id'], $month); // pass month to calculate metrics for that month
     $lowClass = ($metrics['attendance_pct']<80 || $metrics['performance_score']<80)?'low-performance':'';
     $data[] = [
         'fullname'=>$emp['fullname'],
