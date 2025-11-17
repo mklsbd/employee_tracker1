@@ -87,19 +87,35 @@ label{color:var(--text-light);font-weight:500;}
 </div>
 </div>
 
-<!-- Employee Performance Table -->
-<div class="card p-3 mb-4">
-<h5>Employee Performance</h5>
-<table class="table table-striped">
-<thead><tr><th>Name</th><th>Department</th><th>Attendance %</th><th>Performance Score</th><th>Regular Hours</th><th>Overtime Hours</th></tr></thead>
-<tbody id="performance-body"></tbody>
-</table>
-</div>
+<!-- Two-column layout -->
+<div class="row mb-4">
+  <!-- Left column: Employee Performance -->
+  <div class="col-lg-6">
+    <div class="card p-3 mb-4">
+      <h5>Employee Performance</h5>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Attendance %</th>
+            <th>Performance Score</th>
+            <th>Regular Hours</th>
+            <th>Overtime Hours</th>
+          </tr>
+        </thead>
+        <tbody id="performance-body"></tbody>
+      </table>
+    </div>
+  </div>
 
-<!-- Attendance Trend Chart -->
-<div class="card p-3 mb-4">
-<h5>Attendance Trends (Average)</h5>
-<canvas id="attendanceChart"></canvas>
+  <!-- Right column: Attendance Trends -->
+  <div class="col-lg-6">
+    <div class="card p-3 mb-4">
+      <h5>Attendance Trends (Average)</h5>
+      <canvas id="attendanceChart"></canvas>
+    </div>
+  </div>
 </div>
 
 <div class="footer">
